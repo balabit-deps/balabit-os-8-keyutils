@@ -1,3 +1,11 @@
+keyutils (1.6-6ubuntu1.1) focal; urgency=medium
+
+  * d/p/apply-default-ttl-to-records.patch: Add patch
+    to apply default TTL to records obtained from
+    getaddrinfo(). (LP: #1962453)
+
+ -- Utkarsh Gupta <utkarsh@ubuntu.com>  Fri, 27 May 2022 14:33:22 +0530
+
 keyutils (1.6-6ubuntu1) focal; urgency=medium
 
   * d/patches/private-priv.patch: Rename arguments to dh_compute_kdf to

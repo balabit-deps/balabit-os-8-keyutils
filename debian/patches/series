@@ -7,3 +7,4 @@ endianness-and-PIE.patch
 pkg-config-install-tweaks.patch
 man-page-fixes.patch
 private-priv.patch
+apply-default-ttl-to-records.patch
