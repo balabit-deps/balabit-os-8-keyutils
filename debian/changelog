@@ -1,3 +1,9 @@
+keyutils (1.6-6ubuntu1.1bb1) focal; urgency=medium
+
+  * Balabit patched version
+
+ -- Balabit Platform Team <devnull@dev.null>  Sat, 11 Jun 2022 16:25:55 +0200
+
 keyutils (1.6-6ubuntu1.1) focal; urgency=medium
 
   * d/p/apply-default-ttl-to-records.patch: Add patch
