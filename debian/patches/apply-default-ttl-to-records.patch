@@ -1,0 +1,50 @@
+From 75e7568dc516db698093b33ea273e1b4a30b70be Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Tue, 14 Apr 2020 16:07:26 +0100
+Subject: dns: Apply a default TTL to records obtained from getaddrinfo()
+ Address records obtained from getaddrinfo() don't come with any TTL
+ information, even if they're obtained from the DNS, with the result that
+ key.dns_resolver upcall program doesn't set an expiry time on dns_resolver
+ records unless they include a component obtained directly from the DNS,
+ such as an SRV or AFSDB record.
+ .
+ Fix this to apply a default TTL of 10mins in the event that we haven't got
+ one.  This can be configured in /etc/keyutils/key.dns_resolver.conf by
+ adding the line:
+ .
+   default_ttl = <number-of-seconds>
+ .
+ to the file.
+ .
+ Signed-off-by: David Howells <dhowells@redhat.com>
+ Reviewed-by: Ben Boeckel <me@benboeckel.net>
+ Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Description: The upstream patch doesn't apply when cherry-picked, as-is,
+ so we've manually stripped down the configuration bits and only taken
+ the hunk which actually addresses the problem, that is, setting the
+ timeout.
+Co-author: Utkarsh Gupta <utkarsh.gupta@canonical.com>
+Origin: upstream, https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/keyutils.git/commit/?id=75e7568dc516db698093b33ea273e1b4a30b70be
+Bug-Ubuntu: https://bugs.launchpad.net/ubuntu/+source/keyutils/+bug/1962453
+Last-Updated: 2022-02-28
+
+--- a/key.dns_resolver.c
++++ b/key.dns_resolver.c
+@@ -50,6 +50,7 @@
+ static int verbose;
+ int debug_mode;
+ unsigned mask = INET_ALL;
++unsigned int key_expiry = 5;
+ 
+ 
+ /*
+@@ -412,6 +413,9 @@
+ 
+ 	/* load the key with data key */
+ 	if (!debug_mode) {
++		ret = keyctl_set_timeout(key, key_expiry);
++		if (ret == -1)
++			error("%s: keyctl_set_timeout: %m", __func__);
+ 		ret = keyctl_instantiate_iov(key, payload, payload_index, 0);
+ 		if (ret == -1)
+ 			error("%s: keyctl_instantiate: %m", __func__);
